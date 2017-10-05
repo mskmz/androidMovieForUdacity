@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">androidMovieForUdacity</string>
+    <string name="menu_action_rule_hot">依据热点排序</string>
+    <string name="menu_action_rule_score">依据评分排序</string>
 </resources>
