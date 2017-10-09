@@ -1,94 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context="com.example.mskmz.androidmovieforudacity.DetailActivity">
-    <ScrollView
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:background="@color/colorDetailTop"
-                android:layout_width="match_parent"
-                android:layout_height="100dp">
-                <TextView
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="20dp"
-                    android:id="@+id/tv_detail_tile"
-                    android:textSize="40sp"
-                    android:text="Chaapie"
-                    android:textColor="@color/colorWhite"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp">
-                    <ImageView
-                        android:id="@+id/iv_detail_show"
-                        android:scaleType="centerCrop"
-                        android:layout_width="150dp"
-                        android:layout_height="match_parent" />
-                    <TextView
-                        android:layout_marginLeft="30dp"
-                        android:layout_toRightOf="@id/iv_detail_show"
-                        android:layout_alignTop="@+id/iv_detail_show"
-                        android:layout_marginTop="5dp"
-                        android:textSize="25sp"
-                        android:text="2015"
-                        android:id="@+id/tv_detail_year"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:layout_below="@+id/tv_detail_year"
-                        android:layout_alignLeft="@+id/tv_detail_year"
-                        android:layout_marginTop="10dp"
-                        android:text="120min"
-                        android:textSize="25sp"
-                        android:textStyle="italic"
-                        android:id="@+id/tv_detail_time_long"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+        android:orientation="vertical">
 
-                    <TextView
-                        android:layout_below="@+id/tv_detail_time_long"
-                        android:layout_alignLeft="@+id/tv_detail_time_long"
-                        android:layout_marginTop="10sp"
-                        android:textSize="15sp"
-                        android:text="8.1/10"
-                        android:id="@+id/tv_detail_score"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <Button
-                        android:textColor="@color/colorDetailButtonText"
-                        android:text="MAKE AS \nFAVORTE"
-                        android:background="@color/colorDetailButton"
-                        android:layout_below="@+id/tv_detail_score"
-                        android:layout_alignLeft="@+id/tv_detail_score"
-                        android:layout_marginTop="10sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </RelativeLayout>
-                <TextView
-                    android:id="@+id/tv_dateil_detail"
-                    android:text="Deadpool tells the origin story of former Special Forces operative turned mercenary Wade Wilson, who after being subjected to a rogue experiment that leaves him with accelerated healing powers, adopts the alter ego Deadpool. Armed with his new abilities and a dark, twisted sense of humor, Deadpool hunts down the man who nearly destroyed his life"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-            </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/colorDetailTop">
+
+            <TextView
+                android:id="@+id/tv_detail_tile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/spacing_large"
+                tools:text="Chaapie"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/font_larger" />
         </LinearLayout>
-    </ScrollView>
-</RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:layout_marginRight="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/detail_middle_height">
+
+                <ImageView
+                    android:id="@+id/iv_detail_show"
+                    android:layout_width="@dimen/detail_image_middle_width"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/tv_detail_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/iv_detail_show"
+                    android:layout_marginLeft="@dimen/spacing_large"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:layout_toRightOf="@id/iv_detail_show"
+                    tools:text="2015"
+                    android:textSize="@dimen/font_large" />
+
+                <TextView
+                    android:id="@+id/tv_detail_time_long"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/tv_detail_year"
+                    android:layout_below="@+id/tv_detail_year"
+                    android:layout_marginTop="@dimen/spacing_small"                    tools:text="120min"
+                    android:textSize="@dimen/font_large"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/tv_detail_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/tv_detail_time_long"
+                    android:layout_below="@+id/tv_detail_time_long"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    tools:text="8.1/10"
+                    android:textSize="@dimen/font_small" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/tv_detail_score"
+                    android:layout_below="@+id/tv_detail_score"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:background="@color/colorDetailButton"
+                    android:text="MAKE AS \nFAVORTE"
+                    android:textSize="@dimen/font_small"
+                    android:textColor="@color/colorDetailButtonText" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_dateil_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_small"
+                tools:text="Deadpool tells the origin story of former Special Forces operative turned mercenary Wade Wilson, who after being subjected to a rogue experiment that leaves him with accelerated healing powers, adopts the alter ego Deadpool. Armed with his new abilities and a dark, twisted sense of humor, Deadpool hunts down the man who nearly destroyed his life" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

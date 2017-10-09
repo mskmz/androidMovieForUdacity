@@ -1,14 +1,36 @@
 package com.example.mskmz.androidmovieforudacity.model.vo;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by wangzekang on 2017/10/4.
  */
 
-public class MoiveListVo implements Serializable {
+public class MoiveListVo implements Parcelable {
     private List<DateBean> results;
+
+    MoiveListVo(Parcel in) {
+        results=in.readArrayList(DateBean.class.getClassLoader());
+    }
+
+
+    public static final Creator<MoiveListVo> CREATOR = new Creator<MoiveListVo>() {
+        @Override
+        public MoiveListVo createFromParcel(Parcel in) {
+            return new MoiveListVo(in);
+        }
+
+        @Override
+        public MoiveListVo[] newArray(int size) {
+            return new MoiveListVo[size];
+        }
+    };
+
+    public MoiveListVo() {
+    }
 
     public List<DateBean> getResults() {
         return results;
@@ -18,7 +40,17 @@ public class MoiveListVo implements Serializable {
         this.results = results;
     }
 
-    public class DateBean implements Serializable{
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeList(results);
+    }
+
+    public static class DateBean implements Parcelable{
         private String vote_count;
         private String id;
         private String video;
@@ -32,6 +64,37 @@ public class MoiveListVo implements Serializable {
         private String adult;
         private String overview;
         private String release_date;
+
+        protected DateBean(Parcel in) {
+            vote_count = in.readString();
+            id = in.readString();
+            video = in.readString();
+            vote_average = in.readString();
+            title = in.readString();
+            popularity = in.readString();
+            poster_path = in.readString();
+            original_language = in.readString();
+            original_title = in.readString();
+            backdrop_path = in.readString();
+            adult = in.readString();
+            overview = in.readString();
+            release_date = in.readString();
+        }
+
+        public static final Creator<DateBean> CREATOR = new Creator<DateBean>() {
+            @Override
+            public DateBean createFromParcel(Parcel in) {
+                return new DateBean(in);
+            }
+
+            @Override
+            public DateBean[] newArray(int size) {
+                return new DateBean[size];
+            }
+        };
+
+        public DateBean() {
+        }
 
         public String getVote_count() {
             return vote_count;
@@ -135,6 +198,28 @@ public class MoiveListVo implements Serializable {
 
         public void setRelease_date(String release_date) {
             this.release_date = release_date;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel parcel, int i) {
+            parcel.writeString(vote_count);
+            parcel.writeString(id);
+            parcel.writeString(video);
+            parcel.writeString(vote_average);
+            parcel.writeString(title);
+            parcel.writeString(popularity);
+            parcel.writeString(poster_path);
+            parcel.writeString(original_language);
+            parcel.writeString(original_title);
+            parcel.writeString(backdrop_path);
+            parcel.writeString(adult);
+            parcel.writeString(overview);
+            parcel.writeString(release_date);
         }
     }
 }

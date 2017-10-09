@@ -32,7 +32,7 @@ public class DetailActivity extends AppCompatActivity {
     private void init() {
         Intent intent = getIntent();
         if(intent!=null&&intent.hasExtra(Content.MOIVE_LIST_VO_SER)){
-            MoiveListVo.DateBean dateBean = (MoiveListVo.DateBean) intent.getSerializableExtra(Content.MOIVE_LIST_VO_SER);
+            MoiveListVo.DateBean dateBean = (MoiveListVo.DateBean) intent.getParcelableExtra(Content.MOIVE_LIST_VO_SER);
             mTitleTextView.setText(dateBean.getTitle());
             String year = "";
             if(dateBean.getRelease_date().length()>4){
