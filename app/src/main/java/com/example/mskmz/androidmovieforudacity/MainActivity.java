@@ -23,13 +23,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.example.mskmz.androidmovieforudacity.Content.MOIVE_LIST_VO_SER;
 import static com.example.mskmz.androidmovieforudacity.Content.MY_KEY;
 import static com.example.mskmz.androidmovieforudacity.utils.Utils.isPad;
 
 
 public class MainActivity extends AppCompatActivity {
-    RecyclerView mMovieShowListRecyclerView;
     private static final String TAG = "MainActivity";
     private static final String HOT_LIST_URL = "http://api.themoviedb.org/3/movie/popular";
     private static final String SCORE_LIST_URL = "http://api.themoviedb.org/3/movie/top_rated";
@@ -39,14 +41,17 @@ public class MainActivity extends AppCompatActivity {
     MovieShowListAdapter movieShowAdapter;
     List<MoiveListVo.DateBean> moiveDetailVoList;
     AsTaskUtil
-        mGetHotListTask,
-        mGetScoreTask;
+            mGetHotListTask,
+            mGetScoreTask;
+    @BindView(R.id.rv_movie_show_list)
+    RecyclerView mMovieShowListRecyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findView();
+        ButterKnife.bind(this);
         initTask();
         init();
         setClick();
@@ -88,16 +93,16 @@ public class MainActivity extends AppCompatActivity {
         movieShowAdapter = new MovieShowListAdapter(this, moiveDetailVoList, new BaseRecyclerViewAdapter.ListItemClickListener() {
             @Override
             public void onListItemClick(int postion) {
-                Intent staryDetailActivityIntent = new Intent(MainActivity.this,DetailActivity.class);
-                staryDetailActivityIntent.putExtra(MOIVE_LIST_VO_SER,moiveDetailVoList.get(postion));
+                Intent staryDetailActivityIntent = new Intent(MainActivity.this, DetailActivity.class);
+                staryDetailActivityIntent.putExtra(MOIVE_LIST_VO_SER, moiveDetailVoList.get(postion));
                 startActivity(staryDetailActivityIntent);
             }
         });
         mMovieShowListRecyclerView.setHasFixedSize(true);
         mMovieShowListRecyclerView.setAdapter(movieShowAdapter);
-        if(isPad(this)){
+        if (isPad(this)) {
             mMovieShowListRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        }else{
+        } else {
             mMovieShowListRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         }
         Log.d(TAG, "init: GetMovieListTask 运行");
@@ -105,10 +110,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setClick() {
-    }
-
-    private void findView() {
-        mMovieShowListRecyclerView = (RecyclerView) findViewById(R.id.rv_movie_show_list);
     }
 
     public URL buildListUrl(String url) {
@@ -149,9 +150,11 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     public void ruleHot() {
         mGetHotListTask.run();
     }
+
     public void ruleScore() {
         mGetScoreTask.run();
     }
