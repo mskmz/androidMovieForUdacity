@@ -15,4 +15,9 @@
         android:orderInCategory="1"
         android:title="@string/menu_action_rule_score"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_rule_favorte"
+        android:orderInCategory="1"
+        android:title="@string/menu_action_rule_favorte"
+        app:showAsAction="never" />
 </menu>

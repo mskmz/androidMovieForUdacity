@@ -2,4 +2,8 @@
     <string name="app_name">androidMovieForUdacity</string>
     <string name="menu_action_rule_hot">依据热点排序</string>
     <string name="menu_action_rule_score">依据评分排序</string>
+    <string name="menu_action_rule_favorte">查看我收藏的</string>
+    <string name="set_favorte_set">MAKE AS\n  FAVORTE</string>
+    <string name="set_favorte_cancel">CANCEL\n  FAVORTE</string>
+    <string name="set_favorte_loading">LOADING...</string>
 </resources>

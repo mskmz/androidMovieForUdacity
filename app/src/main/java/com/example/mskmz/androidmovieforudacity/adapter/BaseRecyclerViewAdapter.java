@@ -37,7 +37,23 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        holder.bind(mList.get(position));
+        holder.bindBase(mList.get(position));
+    }
+
+    public int getChatAt(T t) {
+        if (mList.contains(t)) {
+            return mList.indexOf(t);
+        } else {
+            return -1;
+        }
+    }
+
+    public boolean isEnd(T t) {
+        return mList.get(mList.size() - 1) == t;
+    }
+
+    public boolean isStart(T t) {
+        return mList.get(0) == t;
     }
 
     public BaseRecyclerViewAdapter(Context context, List<T> postListVoList, BaseRecyclerViewAdapter.ListItemClickListener listItemClickListener) {
@@ -58,6 +74,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
 
     abstract class BaseViewHolder<T> extends RecyclerView.ViewHolder implements View.OnClickListener {
         Context context;
+        T dataVo;
 
         public BaseViewHolder(View itemView, Context context) {
             super(itemView);
@@ -68,13 +85,26 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
 
         abstract void findView(View itemView);
 
+        public void bindBase(T dataVo) {
+            this.dataVo = dataVo;
+            bind(dataVo);
+        }
+
         abstract void bind(T dataVo);
 
         @Override
         public void onClick(View v) {
-            int clickedPosition = getAdapterPosition();
-            mListItemClickListener.onListItemClick(clickedPosition);
+            if(mListItemClickListener!=null){
+                int clickedPosition = getAdapterPosition();
+                mListItemClickListener.onListItemClick(clickedPosition);
+            }
+            onClick(v, dataVo);
         }
+
+        public void onClick(View v, T dataVo) {
+
+        }
+
     }
 
     public interface ListItemClickListener {

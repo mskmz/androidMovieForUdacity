@@ -1,11 +1,13 @@
 package com.example.mskmz.androidmovieforudacity;
 
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,77 +17,48 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.example.mskmz.androidmovieforudacity.adapter.BaseRecyclerViewAdapter;
 import com.example.mskmz.androidmovieforudacity.adapter.MovieShowListAdapter;
+import com.example.mskmz.androidmovieforudacity.corecomponents.loadermanager.prototype.AsyncTaskLoaderForBase;
+import com.example.mskmz.androidmovieforudacity.corecomponents.loadermanager.prototype.AsyncTaskLoaderForString;
+import com.example.mskmz.androidmovieforudacity.data.CollectionDbHelper;
+import com.example.mskmz.androidmovieforudacity.databinding.ActivityMainBinding;
 import com.example.mskmz.androidmovieforudacity.model.vo.MoiveListVo;
-import com.example.mskmz.androidmovieforudacity.utils.AsTaskUtil;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-import static com.example.mskmz.androidmovieforudacity.Content.MOIVE_LIST_VO_SER;
-import static com.example.mskmz.androidmovieforudacity.Content.MY_KEY;
+import static com.example.mskmz.androidmovieforudacity.data.Content.MOIVE_LIST_VO_SER;
+import static com.example.mskmz.androidmovieforudacity.utils.Utils.buildListUrl;
 import static com.example.mskmz.androidmovieforudacity.utils.Utils.isPad;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
     private static final String TAG = "MainActivity";
     private static final String HOT_LIST_URL = "http://api.themoviedb.org/3/movie/popular";
     private static final String SCORE_LIST_URL = "http://api.themoviedb.org/3/movie/top_rated";
     private static final String FIND_URL_PRE = "https://api.themoviedb.org/3/movie";
-    private static final String KEY_PARAM = "api_key";
     private static final String LANGUAGE_PARAM = "language";
     MovieShowListAdapter movieShowAdapter;
     List<MoiveListVo.DateBean> moiveDetailVoList;
-    AsTaskUtil
-            mGetHotListTask,
-            mGetScoreTask;
-    @BindView(R.id.rv_movie_show_list)
-    RecyclerView mMovieShowListRecyclerView;
 
+    private static final int GET_HOTLIST_LOADER = 11;
+    private static final int GET_SCORE_LOADER = 12;
+
+    private static final int DATEBASE_GET_LIST = 21;
+
+
+    ActivityMainBinding mainBinding;
+
+    private Context getContext() {
+        return this;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        initTask();
+        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         init();
         setClick();
-    }
-
-    private void initTask() {
-        mGetScoreTask = new AsTaskUtil(buildListUrl(SCORE_LIST_URL), this, new AsTaskUtil.AsTaskOnPostExecuteCalllBack() {
-            @Override
-            public void callback(String result) {
-                MoiveListVo showVo = JSON.parseObject(result, MoiveListVo.class);
-                if (showVo != null && showVo.getResults() != null) {
-                    moiveDetailVoList.clear();
-                    moiveDetailVoList.addAll(showVo.getResults());
-                    movieShowAdapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(MainActivity.this, "请求失败，请检查网络状态", Toast.LENGTH_SHORT);
-
-                }
-            }
-        });
-        mGetHotListTask = new AsTaskUtil(buildListUrl(HOT_LIST_URL), this, new AsTaskUtil.AsTaskOnPostExecuteCalllBack() {
-            @Override
-            public void callback(String result) {
-                MoiveListVo showVo = JSON.parseObject(result, MoiveListVo.class);
-                if (showVo != null && showVo.getResults() != null) {
-                    moiveDetailVoList.clear();
-                    moiveDetailVoList.addAll(showVo.getResults());
-                    movieShowAdapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(MainActivity.this, "请求失败，请检查网络状态", Toast.LENGTH_SHORT);
-
-                }
-            }
-        });
     }
 
     private void init() {
@@ -98,33 +71,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(staryDetailActivityIntent);
             }
         });
-        mMovieShowListRecyclerView.setHasFixedSize(true);
-        mMovieShowListRecyclerView.setAdapter(movieShowAdapter);
+        mainBinding.rvMovieShowList.setHasFixedSize(true);
+        mainBinding.rvMovieShowList.setAdapter(movieShowAdapter);
         if (isPad(this)) {
-            mMovieShowListRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+            mainBinding.rvMovieShowList.setLayoutManager(new GridLayoutManager(this, 3));
         } else {
-            mMovieShowListRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+            mainBinding.rvMovieShowList.setLayoutManager(new GridLayoutManager(this, 2));
         }
-        Log.d(TAG, "init: GetMovieListTask 运行");
-        mGetHotListTask.run();
+
+        runLoaderAsyncTask(GET_HOTLIST_LOADER);
+
     }
 
     private void setClick() {
-    }
-
-    public URL buildListUrl(String url) {
-        Uri builtUri = Uri.parse(url).buildUpon()
-                .appendQueryParameter(KEY_PARAM, MY_KEY)
-                .build();
-        URL restUrl = null;
-        try {
-            restUrl = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        Log.v(TAG, "Built URI " + url);
-
-        return restUrl;
     }
 
 
@@ -142,21 +101,112 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_rule_hot:
-                ruleHot();
+                runLoaderAsyncTask(GET_HOTLIST_LOADER);
                 return true;
             case R.id.action_rule_score:
-                ruleScore();
+                runLoaderAsyncTask(GET_SCORE_LOADER);
                 return true;
+            case R.id.action_rule_favorte:
+                runLoaderAsyncTask(DATEBASE_GET_LIST);
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void ruleHot() {
-        mGetHotListTask.run();
+    public void runLoaderAsyncTask(int identifier) {
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<String> githubSearchLoader = loaderManager.getLoader(identifier);
+        // COMPLETED (23) If the Loader was null, initialize it. Else, restart it.
+        if (githubSearchLoader == null) {
+            loaderManager.initLoader(identifier, null, this);
+        } else {
+            loaderManager.restartLoader(identifier, null, this);
+        }
     }
 
-    public void ruleScore() {
-        mGetScoreTask.run();
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case GET_HOTLIST_LOADER:
+                return new AsyncTaskLoaderForString(
+                        id,
+                        MainActivity.this,
+                        buildListUrl(HOT_LIST_URL),
+                        new AsyncTaskLoaderForString.AsTaskCallBack() {
+                            @Override
+                            public void callback(String result) {
+                                MoiveListVo showVo = JSON.parseObject(result, MoiveListVo.class);
+                                if (showVo != null && showVo.getResults() != null) {
+                                    moiveDetailVoList.clear();
+                                    moiveDetailVoList.addAll(showVo.getResults());
+                                    Log.d(TAG, "callback: GET_HOTLIST_LOADER刷新");
+                                    movieShowAdapter.notifyDataSetChanged();
+                                } else {
+                                    Toast.makeText(MainActivity.this, "请求失败，请检查网络状态", Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+                        }
+                );
+            case GET_SCORE_LOADER:
+                return new AsyncTaskLoaderForString(
+                        id,
+                        MainActivity.this,
+                        buildListUrl(SCORE_LIST_URL),
+                        new AsyncTaskLoaderForString.AsTaskCallBack() {
+                            @Override
+                            public void callback(String result) {
+                                MoiveListVo showVo = JSON.parseObject(result, MoiveListVo.class);
+                                if (showVo != null && showVo.getResults() != null) {
+                                    moiveDetailVoList.clear();
+                                    moiveDetailVoList.addAll(showVo.getResults());
+                                    Log.d(TAG, "callback: SCORE_LIST_URL刷新");
+                                    movieShowAdapter.notifyDataSetChanged();
+                                } else {
+                                    Toast.makeText(MainActivity.this, "请求失败，请检查网络状态", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                );
+            case DATEBASE_GET_LIST:
+                return new AsyncTaskLoaderForBase<List<MoiveListVo.DateBean>>(
+                        id,
+                        getContext(),
+                        new AsyncTaskLoaderForBase.BaseAsTask<List<MoiveListVo.DateBean>>() {
+                            @Override
+                            public List<MoiveListVo.DateBean> runBase() {
+                                CollectionDbHelper collectionDbHelper = new CollectionDbHelper(getContext());
+                                return collectionDbHelper.getAllList();
+                            }
+
+                            @Override
+                            public void callback(List<MoiveListVo.DateBean> result) {
+                                moiveDetailVoList.clear();
+                                moiveDetailVoList.addAll(result);
+                                movieShowAdapter.notifyDataSetChanged();
+                            }
+                        }
+
+                );
+            default:
+                return new AsyncTaskLoaderForString(MainActivity.this);
+        }
+
     }
 
+    @Override
+    public void onLoadFinished(Loader loader, Object data) {
+        if (loader instanceof AsyncTaskLoaderForString) {
+            AsyncTaskLoaderForString asyncTaskLoaderForString = (AsyncTaskLoaderForString) loader;
+            asyncTaskLoaderForString.callBack((String) data);
+        } else if (loader instanceof AsyncTaskLoaderForBase) {
+            AsyncTaskLoaderForBase asyncTaskLoaderForString = (AsyncTaskLoaderForBase) loader;
+            asyncTaskLoaderForString.callBack(data);
+
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+
+    }
 }

@@ -2,7 +2,11 @@ package com.example.mskmz.androidmovieforudacity.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Window;
@@ -10,12 +14,37 @@ import android.view.WindowManager;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+
+import static com.example.mskmz.androidmovieforudacity.data.Content.KEY_PARAM;
+import static com.example.mskmz.androidmovieforudacity.data.Content.MY_KEY;
 
 /**
  * Created by wangzekang on 2017/10/5.
  */
 
 public class Utils {
+    public static boolean isIntentAvailable(Context context, Intent intent) {
+        final PackageManager packageManager = context.getPackageManager();
+        List<ResolveInfo> list = packageManager.queryIntentActivities(intent,
+                PackageManager.GET_ACTIVITIES);
+        return list.size() > 0;
+    }
+    public static URL buildListUrl(String url) {
+        Uri builtUri = Uri.parse(url).buildUpon()
+                .appendQueryParameter(KEY_PARAM, MY_KEY)
+                .build();
+        URL restUrl = null;
+        try {
+            restUrl = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return restUrl;
+    }
+
     public static boolean isPad(Context context) {
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)

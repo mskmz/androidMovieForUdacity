@@ -2,14 +2,16 @@ package com.example.mskmz.androidmovieforudacity.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
+import android.databinding.DataBindingUtil;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mskmz.androidmovieforudacity.R;
+import com.example.mskmz.androidmovieforudacity.databinding.ListitemMovieShowBinding;
 import com.example.mskmz.androidmovieforudacity.model.vo.MoiveListVo;
 import com.example.mskmz.androidmovieforudacity.utils.Utils;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -34,12 +36,11 @@ public class MovieShowListAdapter extends BaseRecyclerViewAdapter<MoiveListVo.Da
 
     @Override
     BaseViewHolder setViewHolder(View view, Context context) {
-        return new ViewHodler(view,context);
+        return new ViewHodler(view, context);
     }
 
-
-    public class ViewHodler extends  BaseViewHolder<MoiveListVo.DateBean>{
-        public ImageView mMovieShowImageView ;
+    public class ViewHodler extends BaseViewHolder<MoiveListVo.DateBean> {
+        ListitemMovieShowBinding listitemMovieShowBinding;
 
         public ViewHodler(View itemView, Context context) {
             super(itemView, context);
@@ -47,26 +48,28 @@ public class MovieShowListAdapter extends BaseRecyclerViewAdapter<MoiveListVo.Da
 
         @Override
         void findView(View itemView) {
-            mMovieShowImageView = (ImageView) itemView.findViewById(R.id.iv_listitem_movie_show);
+            listitemMovieShowBinding = DataBindingUtil.bind(itemView);
         }
 
         @Override
-        void bind(MoiveListVo.DateBean dataVo) {
+        void bind(final MoiveListVo.DateBean dataVo) {
             Activity activity = (Activity) context;
-            Log.d(TAG, "bindActionBar: "+Utils.getActionBarHeight(activity));
-            Log.d(TAG, "bindTitle: "+Utils.getTitleHeight(activity));
-            Log.d(TAG, "bindTop: "+Utils.getTopHeight(activity));
-            Log.d(TAG, "bindSbar: "+Utils.getStatusBarHeight(activity));
-            int count=2;
-            if(isPad(context)){
-                count=3;
+            int count = 2;
+            if (isPad(context)) {
+                count = 3;
             }
-            Picasso
-                    .with(context)
-                    .load("https://image.tmdb.org/t/p/w185/"+dataVo.getPoster_path())
-                    .resize(Utils.getWidth(activity)/count,(Utils.getHeight(activity)-Utils.getTopHeight(activity))/count)
+            int width= Utils.getWidth(activity) / count;
+            int height = (Utils.getHeight(activity) - Utils.getTopHeight(activity)) / count;
+            ViewGroup.LayoutParams layoutParams  = listitemMovieShowBinding.ivListitemMovieShow.getLayoutParams();
+            layoutParams.width=width;
+            layoutParams.height=height;
+            RequestOptions myOptions = new RequestOptions()
                     .centerCrop()
-                    .into(mMovieShowImageView);
+                    .override(width,height);
+            Glide.with(context)
+                    .load("https://image.tmdb.org/t/p/w185/" + dataVo.getPoster_path())
+                    .apply(myOptions)
+                    .into(listitemMovieShowBinding.ivListitemMovieShow);
         }
 
 

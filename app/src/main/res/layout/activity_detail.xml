@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    tools:context="com.example.mskmz.androidmovieforudacity.DetailActivity">
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:fillViewport="true">
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="@color/colorDetailTop">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/v_title_back"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@color/colorDetailTop"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_detail_tile"
@@ -23,78 +28,103 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/spacing_large"
-                tools:text="Chaapie"
                 android:textColor="@color/colorWhite"
-                android:textSize="@dimen/font_larger" />
-        </LinearLayout>
+                android:textSize="@dimen/font_larger"
+                app:layout_constraintBottom_toBottomOf="@id/v_title_back"
+                app:layout_constraintLeft_toLeftOf="@id/v_title_back"
+                app:layout_constraintTop_toTopOf="@id/v_title_back"
+                tools:text="Chaapie" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/spacing_large"
-            android:layout_marginRight="@dimen/spacing_large"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:orientation="vertical">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/detail_middle_height">
+            <ImageView
+                android:id="@+id/iv_detail_show"
+                android:layout_width="@dimen/detail_image_middle_width"
+                android:layout_height="@dimen/detail_middle_height"
+                android:layout_marginLeft="@dimen/spacing_large"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:scaleType="centerCrop"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/v_title_back" />
 
-                <ImageView
-                    android:id="@+id/iv_detail_show"
-                    android:layout_width="@dimen/detail_image_middle_width"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop" />
+            <TextView
+                android:id="@+id/tv_detail_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_large"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                app:layout_constraintBottom_toBottomOf="@id/iv_detail_show"
+                app:layout_constraintLeft_toRightOf="@id/iv_detail_show"
+                app:layout_constraintTop_toTopOf="@id/iv_detail_show"
+                app:layout_constraintVertical_bias="0.1"
+                tools:text="2015" />
 
-                <TextView
-                    android:id="@+id/tv_detail_year"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/iv_detail_show"
-                    android:layout_marginLeft="@dimen/spacing_large"
-                    android:layout_marginTop="@dimen/spacing_small"
-                    android:layout_toRightOf="@id/iv_detail_show"
-                    tools:text="2015"
-                    android:textSize="@dimen/font_large" />
+            <TextView
+                android:id="@+id/tv_detail_time_long"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_large"
+                android:textStyle="italic"
 
-                <TextView
-                    android:id="@+id/tv_detail_time_long"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/tv_detail_year"
-                    android:layout_below="@+id/tv_detail_year"
-                    android:layout_marginTop="@dimen/spacing_small"                    tools:text="120min"
-                    android:textSize="@dimen/font_large"
-                    android:textStyle="italic" />
+                app:layout_constraintBottom_toBottomOf="@id/iv_detail_show"
+                app:layout_constraintLeft_toLeftOf="@id/tv_detail_year"
+                app:layout_constraintTop_toTopOf="@id/iv_detail_show"
+                app:layout_constraintVertical_bias="0.35"
+                tools:text="120min" />
 
-                <TextView
-                    android:id="@+id/tv_detail_score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/tv_detail_time_long"
-                    android:layout_below="@+id/tv_detail_time_long"
-                    android:layout_marginTop="@dimen/spacing_small"
-                    tools:text="8.1/10"
-                    android:textSize="@dimen/font_small" />
+            <TextView
+                android:id="@+id/tv_detail_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_small"
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/tv_detail_score"
-                    android:layout_below="@+id/tv_detail_score"
-                    android:layout_marginTop="@dimen/spacing_small"
-                    android:background="@color/colorDetailButton"
-                    android:text="MAKE AS \nFAVORTE"
-                    android:textSize="@dimen/font_small"
-                    android:textColor="@color/colorDetailButtonText" />
-            </RelativeLayout>
+                app:layout_constraintBottom_toBottomOf="@id/iv_detail_show"
+                app:layout_constraintLeft_toLeftOf="@id/tv_detail_year"
+                app:layout_constraintTop_toTopOf="@id/iv_detail_show"
+                app:layout_constraintVertical_bias="0.55"
+
+                tools:text="8.1/10" />
+
+            <Button
+                android:id="@+id/btn_set_favorte"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorDetailButton"
+                android:text="@string/set_favorte_set"
+                android:textColor="@color/colorDetailButtonText"
+                android:textSize="@dimen/font_small"
+                app:layout_constraintBottom_toBottomOf="@id/iv_detail_show"
+                app:layout_constraintLeft_toLeftOf="@id/tv_detail_year"
+                app:layout_constraintTop_toTopOf="@id/iv_detail_show"
+                app:layout_constraintVertical_bias="0.9"
+                />
 
             <TextView
                 android:id="@+id/tv_dateil_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_large"
+                android:layout_marginRight="@dimen/spacing_large"
                 android:textSize="@dimen/font_small"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_detail_show"
                 tools:text="Deadpool tells the origin story of former Special Forces operative turned mercenary Wade Wilson, who after being subjected to a rogue experiment that leaves him with accelerated healing powers, adopts the alter ego Deadpool. Armed with his new abilities and a dark, twisted sense of humor, Deadpool hunts down the man who nearly destroyed his life" />
-        </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyc_trailers"
+                app:layout_constraintLeft_toLeftOf="@id/tv_dateil_detail"
+                app:layout_constraintRight_toRightOf="@id/tv_dateil_detail"
+                app:layout_constraintTop_toBottomOf="@id/tv_dateil_detail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyc_comment"
+                app:layout_constraintLeft_toLeftOf="@id/tv_dateil_detail"
+                app:layout_constraintRight_toRightOf="@id/tv_dateil_detail"
+                app:layout_constraintTop_toBottomOf="@id/recyc_trailers"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+</layout>
