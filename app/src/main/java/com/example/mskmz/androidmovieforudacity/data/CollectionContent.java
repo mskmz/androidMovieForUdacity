@@ -1,5 +1,6 @@
 package com.example.mskmz.androidmovieforudacity.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -7,6 +8,11 @@ import android.provider.BaseColumns;
  */
 
 public class CollectionContent {
+    public static final String AUTHORITY="com.example.mskmz.CollectionInfo";
+    public static final Uri BASE_CONTENT_URL=Uri.parse("content://"+AUTHORITY);
+    public static final String PATH_COLLECTION="colletcion";
+    public static final Uri CONTENT_URL=BASE_CONTENT_URL.buildUpon().appendPath(PATH_COLLECTION).build();
+
     public static final class CollectionEntry implements BaseColumns {
 
         public static final String TABLE_NAME = "collection";

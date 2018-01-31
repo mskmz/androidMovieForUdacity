@@ -25,6 +25,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <provider
+            android:authorities="com.example.mskmz.CollectionInfo"
+            android:name="com.example.mskmz.androidmovieforudacity.data.CollectionVontentProvider"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

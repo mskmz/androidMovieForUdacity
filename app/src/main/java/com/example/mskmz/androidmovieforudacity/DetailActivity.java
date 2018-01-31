@@ -2,9 +2,11 @@ package com.example.mskmz.androidmovieforudacity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +31,11 @@ import com.example.mskmz.androidmovieforudacity.model.vo.VideosListVo;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.mskmz.androidmovieforudacity.data.CollectionContent.CONTENT_URL;
+import static com.example.mskmz.androidmovieforudacity.data.CollectionContent.CollectionEntry.COLUMN_ID;
 import static com.example.mskmz.androidmovieforudacity.data.Content.BASE_URL;
+import static com.example.mskmz.androidmovieforudacity.utils.DataBaseCollectionTableDealWith.dateVoToContentValues;
+import static com.example.mskmz.androidmovieforudacity.utils.DataBaseCollectionTableDealWith.isEmpty;
 import static com.example.mskmz.androidmovieforudacity.utils.Utils.buildListUrl;
 
 
@@ -73,14 +79,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             detailBinding.btnSetFavorte.setBackgroundColor(getResources().getColor(R.color.colorRed));
             detailBinding.btnSetFavorte.setText(getResources().getString(R.string.set_favorte_cancel));
         }
-    }
-
-    private void readFavorte() {
-        CollectionDbHelper collectionDbHelper = new CollectionDbHelper(this);
-        if (collectionDbHelper.idIsExists(dateBean.getId())) {
-
-        }
-
     }
 
     @Override
@@ -186,7 +184,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                                     year = moiveDetailVo.getRelease_date().substring(0, 4);
                                 }
                                 detailBinding.tvDetailYear.setText(year);
-                                detailBinding.tvDetailScore.setText(moiveDetailVo.getVote_average() + "/10");
+                                detailBinding.tvDetailScore.setText(moiveDetailVo.getVote_average().length()>4?moiveDetailVo.getVote_average().substring(0,3):moiveDetailVo.getVote_average() + "/10");
                                 detailBinding.tvDetailTimeLong.setText(moiveDetailVo.getRuntime() + "min");
                                 detailBinding.tvDateilDetail.setText(moiveDetailVo.getOverview());
                             }
@@ -200,8 +198,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                             @Override
                             public Void runBase() {
                                 setFavorte = true;
-                                CollectionDbHelper collectionDbHelper = new CollectionDbHelper(getContext());
-                                collectionDbHelper.insert(dateBean);
+                                getContentResolver().insert(CONTENT_URL,dateVoToContentValues(dateBean));
                                 return null;
                             }
 
@@ -212,21 +209,21 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                         }
                 );
             case DATEBASE_DEL:
-                return new AsyncTaskLoaderForBase<Void>(
+                return new AsyncTaskLoaderForBase<Integer>(
                         id,
                         getContext(),
-                        new AsyncTaskLoaderForBase.BaseAsTask<Void>() {
+                        new AsyncTaskLoaderForBase.BaseAsTask<Integer>() {
                             @Override
-                            public Void runBase() {
+                            public Integer runBase() {
                                 setFavorte = true;
-                                CollectionDbHelper collectionDbHelper = new CollectionDbHelper(getContext());
-                                collectionDbHelper.del(dateBean.getId());
-                                return null;
+                                return getContentResolver().delete(CONTENT_URL, "id=?", new String[]{dateBean.getId()});
                             }
 
                             @Override
-                            public void callback(Void result) {
-                                runLoaderAsyncTask(DATEBASE_ISEXIST);
+                            public void callback(Integer count) {
+                                if(count>0){
+                                    runLoaderAsyncTask(DATEBASE_ISEXIST);
+                                }
                             }
                         }
                 );
@@ -238,13 +235,9 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                             @Override
                             public Boolean runBase() {
                                 setFavorte = true;
-                                CollectionDbHelper collectionDbHelper = new CollectionDbHelper(getContext());
-                                if (collectionDbHelper.idIsExists(dateBean.getId())) {
-                                    Log.d(TAG, "runBase: idIsExists is Ture");
-                                    return true;
-                                }
-                                Log.d(TAG, "runBase: idIsExists is False");
-                                return false;
+                                Cursor cursor=getContentResolver().query(CONTENT_URL, new String[]{COLUMN_ID}, "id=?",
+                                        new String[]{dateBean.getId()},null);
+                                return isEmpty(cursor);
                             }
 
                             @Override
@@ -304,7 +297,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                 if (setFavorte) {
                     return;
                 }
-                setFavorte=true;
+                setFavorte = true;
                 setFavorte();
                 if (isFavorte) {
                     runLoaderAsyncTask(DATEBASE_DEL);

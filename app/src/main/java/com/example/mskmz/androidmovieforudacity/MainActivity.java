@@ -2,6 +2,7 @@ package com.example.mskmz.androidmovieforudacity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -26,7 +27,10 @@ import com.example.mskmz.androidmovieforudacity.model.vo.MoiveListVo;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.mskmz.androidmovieforudacity.data.CollectionContent.CONTENT_URL;
 import static com.example.mskmz.androidmovieforudacity.data.Content.MOIVE_LIST_VO_SER;
+import static com.example.mskmz.androidmovieforudacity.data.MoviePreferences.*;
+import static com.example.mskmz.androidmovieforudacity.utils.DataBaseCollectionTableDealWith.cursorToList;
 import static com.example.mskmz.androidmovieforudacity.utils.Utils.buildListUrl;
 import static com.example.mskmz.androidmovieforudacity.utils.Utils.isPad;
 
@@ -42,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private static final int GET_HOTLIST_LOADER = 11;
     private static final int GET_SCORE_LOADER = 12;
-
     private static final int DATEBASE_GET_LIST = 21;
 
 
@@ -79,8 +82,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mainBinding.rvMovieShowList.setLayoutManager(new GridLayoutManager(this, 2));
         }
 
-        runLoaderAsyncTask(GET_HOTLIST_LOADER);
+        sortList();
+    }
 
+    private void sortList() {
+        switch (getSortType(this)) {
+            case SORT_HOT:
+                runLoaderAsyncTask(GET_HOTLIST_LOADER);
+                break;
+            case SORT_SCORE:
+                runLoaderAsyncTask(GET_SCORE_LOADER);
+                break;
+            case SORT_COLLECTION:
+                runLoaderAsyncTask(DATEBASE_GET_LIST);
+                break;
+        }
     }
 
     private void setClick() {
@@ -101,13 +117,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_rule_hot:
-                runLoaderAsyncTask(GET_HOTLIST_LOADER);
+                changeSortType(this,SORT_HOT);
+                sortList();
                 return true;
             case R.id.action_rule_score:
-                runLoaderAsyncTask(GET_SCORE_LOADER);
+                changeSortType(this,SORT_SCORE);
+                sortList();
                 return true;
             case R.id.action_rule_favorte:
-                runLoaderAsyncTask(DATEBASE_GET_LIST);
+                changeSortType(this,SORT_COLLECTION);
+                sortList();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -174,8 +194,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         new AsyncTaskLoaderForBase.BaseAsTask<List<MoiveListVo.DateBean>>() {
                             @Override
                             public List<MoiveListVo.DateBean> runBase() {
-                                CollectionDbHelper collectionDbHelper = new CollectionDbHelper(getContext());
-                                return collectionDbHelper.getAllList();
+                                Cursor cursor = getContentResolver().query(CONTENT_URL, null, null, null, null);
+                                return cursorToList(cursor);
                             }
 
                             @Override
